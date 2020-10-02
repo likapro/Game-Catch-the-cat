@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 public class GameWindow extends JFrame{
 
@@ -14,6 +17,11 @@ public class GameWindow extends JFrame{
     private static Image background;
     private static Image game_over;
     private static Image cat;
+    private static Image cat2;
+    private static Image cat3;
+    private static Image cat7;
+    private static Image cat8;
+    private static Image catRandom;
     private static float cat_left = 200;
     private static float cat_top  = -200;
     private static float cat_v = 150;
@@ -28,6 +36,10 @@ public class GameWindow extends JFrame{
         background = ImageIO.read(GameWindow.class.getResourceAsStream("background.jpg"));
         game_over = ImageIO.read(GameWindow.class.getResourceAsStream("game_over.jpg"));
         cat = ImageIO.read(GameWindow.class.getResourceAsStream("9.png"));
+        cat2 = ImageIO.read(GameWindow.class.getResourceAsStream("2.png"));
+        cat3 = ImageIO.read(GameWindow.class.getResourceAsStream("3.png"));
+        cat7 = ImageIO.read(GameWindow.class.getResourceAsStream("7.png"));
+        cat8 = ImageIO.read(GameWindow.class.getResourceAsStream("8.png"));
         restart = ImageIO.read(GameWindow.class.getResourceAsStream("restart.png"));
         game_window = new GameWindow();
         game_window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // при закрытие окна, программа завершится
@@ -35,6 +47,13 @@ public class GameWindow extends JFrame{
         game_window.setSize(1085,737); // размеры окна
         game_window.setResizable(false); // запрещает менять размеры окна
         last_frame_time = System.nanoTime();
+        ArrayList<Image> ourCats = new ArrayList<Image>();
+        ourCats.add(cat);
+        ourCats.add(cat2);
+        ourCats.add(cat3);
+        ourCats.add(cat7);
+        ourCats.add(cat8);
+        catRandom = ourCats.get(0);
         GameField game_field = new GameField();
         game_field.addMouseListener(new MouseAdapter() {
             @Override
@@ -53,6 +72,10 @@ public class GameWindow extends JFrame{
                     cat_v += 50;
                     score++;
                     game_window.setTitle("Score: "+score);
+//                    Random rand = new Random();                         // объект класса рандом, чтобы подставлять в значение рандоминдекс,по которому будем получать объект из списка
+//                    int randomIndex = rand.nextInt(ourCats.size());     // хотя можно было через Math.random()
+//                    catRandom = ourCats.get(randomIndex);               // получаем случайного кота
+                    catRandom = ourCats.get((int) (Math.random() * ourCats.size())); // получаем случайный cat
                 }
                 if(is_restart && is_lose){  // условие прожатия кнопки рестарта и флага поражения
                     cat_top = -200;
@@ -74,7 +97,7 @@ public class GameWindow extends JFrame{
         is_lose = false;
         cat_top = cat_top + cat_v * delta_time;
         g.drawImage(background, 0, 0, null);
-        g.drawImage(cat, (int) cat_left,(int) cat_top,null);
+        g.drawImage(catRandom, (int) cat_left,(int) cat_top,null);
         if(cat_top > game_window.getHeight()) {
             g.drawImage(game_over, -70, 0, null);
             is_lose = true;
